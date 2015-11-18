@@ -11,29 +11,34 @@ describe('promisify', function() {
     }, 1);
   };
 
-  it.only('returns a function which returns a promise', function() {
+  it('returns a function which returns a promise', function() {
     var slowMultiplyAsync = app.promisify(slowMultiply);
     return slowMultiplyAsync(3, 6).then(function(result) {
       expect(result).to.eql(18);
     });
-
-    // slowMultiplyAsync(2, 6).to.eventually.eql(12);
   });
 });
 
-
 describe('promisifyAll', function() {
   it('returns the proper keys when there are no functions on the object', function() {
-
+    var oldObject = { hello: 2, goodbye: 'seeyalater'};
+    var newObject = app.promisifyAll(oldObject);
+    expect(newObject).to.have.keys(['hello', 'goodbye']);
   });
 
   it('returns the proper keys when there is a single function on the object', function() {
-    // var myObject = { hello: function(){}, goodbye: 'seeya'};
-
+    var func = function() { return 'seeyalater'; };
+    var oldObject = { hello: 2, goodbye: func };
+    var newObject = app.promisifyAll(oldObject);
+    expect(newObject).to.have.keys(['hello', 'goodbye', 'goodbyeAsync']);
   });
 
   it('returns the proper keys when there are multiple functions on the object', function() {
-
+    var func1 = function() { return 'seeyalater'; };
+    var func2 = function() { return 'until next time!'; };
+    var oldObject = { hello: 2, goodbye1: func1, goodbye2: func2 };
+    var newObject = app.promisifyAll(oldObject);
+    expect(newObject).to.have.keys(
+      ['hello', 'goodbye1', 'goodbye1Async','goodbye2', 'goodbye2Async']);
   });
-
 });

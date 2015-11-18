@@ -1,16 +1,5 @@
 'use strict';
 
-var isPrimitive = function(val) {
-    return val == null || val === true || val === false ||
-        typeof val === "string" || typeof val === "number";
-
-};
-
-var isObject = function(val) {
-    return typeof val === "function" ||
-           typeof val === "object" && val !== null;
-};
-
 /**
  * Takes a function and returns a Promise version
  * of the function which, when called, will call the
@@ -60,15 +49,16 @@ var promisify = function(func) {
  * version of functions.
  */
 var promisifyAll = function(obj) {
-  // iterate through the keys of the object
-  //   check the value of each key to see if it is a function
-  //   if it's a function, promisify it
-  //   add the promisified version of it to the object
-  // return the object
-
-
-  //var keys = Object.keys(obj);
-  // console.log(keys);
+  var keys = Object.keys(obj);
+  for (var i = 0; i < keys.length; i++) {
+    var key = keys[i];
+    var val = obj[key];
+    if (typeof val === 'function') {
+      var asyncKey = key + 'Async';
+      obj[asyncKey] = promisify(val);
+    }
+  }
+  return obj;
 };
 
 module.exports = {

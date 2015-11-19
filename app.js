@@ -49,15 +49,13 @@ var promisify = function(func) {
  * version of functions.
  */
 var promisifyAll = function(obj) {
-  var keys = Object.keys(obj);
-  for (var i = 0; i < keys.length; i++) {
-    var key = keys[i];
+  Object.keys(obj).forEach(function(key) {
     var val = obj[key];
     if (typeof val === 'function') {
       var asyncKey = key + 'Async';
       obj[asyncKey] = promisify(val);
     }
-  }
+  });
   return obj;
 };
 
